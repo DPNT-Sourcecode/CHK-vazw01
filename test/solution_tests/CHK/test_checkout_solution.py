@@ -27,5 +27,3 @@ def test_checkout_solution():
     assert checkout.checkout("DDDD") == 60
 
 
-
-

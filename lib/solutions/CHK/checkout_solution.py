@@ -29,5 +29,3 @@ class CheckoutSolution:
 
         return basket_total
 
-
-

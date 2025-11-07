@@ -13,7 +13,7 @@ class CheckoutSolution:
         counts = Counter(skus)
         basket_total = 0
 
-        for item, count in counts:
+        for item, count in counts.items():
             if item not in self.PRICES:
                 return -1
 
@@ -28,3 +28,7 @@ class CheckoutSolution:
             basket_total += offer_total
 
         return basket_total
+
+
+checkout_solution = CheckoutSolution()
+print(checkout_solution.checkout("AAAAA"))

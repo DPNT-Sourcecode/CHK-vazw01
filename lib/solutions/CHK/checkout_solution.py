@@ -7,7 +7,7 @@ class CheckoutSolution:
 
     # skus = unicode string
     def checkout(self, skus):
-        if not isinstance(skus, str) or not skus.isalpha():
+        if not isinstance(skus, str):
             return -1
 
         counts = Counter(skus)
@@ -28,5 +28,6 @@ class CheckoutSolution:
             basket_total += offer_total
 
         return basket_total
+
 
 

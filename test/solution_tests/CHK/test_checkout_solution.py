@@ -87,3 +87,22 @@ class TestCheckoutSolution(unittest.TestCase):
             ("UUUUU", 160), ("UUUUUUUU", 240),
         ]
         self.check_cases(cases)
+
+    def test_cross_free_EB(self):
+        cases = [
+            ("E", 40), ("B", 30), ("EB", 40), ("EEB", 80),
+            ("EBB", 70), ("EEBB", 80), ("EEEEBB", 120),
+        ]
+        self.check_cases(cases)
+
+    def test_cross_free_NM(self):
+        cases = [
+            ("NNN", 120),
+            ("NNNM", 120),
+            ("NNNNMM", 175),
+        ]
+        self.check_cases(cases)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -17,5 +17,9 @@ def test_checkout_solution():
     assert checkout("FFF") == 20
     assert checkout("FFFF") == 30
     assert checkout("FFFFFF") == 40
+    assert checkout("UUUU") == 120
+    assert checkout("UUUUU") == 120
+
+
 
 

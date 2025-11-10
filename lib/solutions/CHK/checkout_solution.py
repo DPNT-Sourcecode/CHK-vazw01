@@ -40,12 +40,12 @@ def _helper_apply_bundles(count: int, offers: List[Tuple[int, int]]) -> Tuple[in
     return total, count
 
 def _helper_cross_apply_offers(counts: Counter) -> Dict[str, int]:
-    adjusted_counts = counts.copy()
-    for offer_sku, required_qty, free_sku, free_qty in CROSS_OFFERS:
-        num_offers = counts.get(offer_sku, 0) // required_qty
-        if num_offers > 0 and free_sku in adjusted_counts:
-            adjusted_counts[free_sku] = max(0, adjusted_counts[free_sku] - num_offers * free_qty)
-    return adjusted_counts
+    free: Dict[str, int] = {}
+    for trigger_sku, trigger_qty, free_sku, free_qty in CROSS_OFFERS:
+        triggers  =counts.get(trigger_sku, 0) // trigger_qty
+        if triggers:
+            free[free_sku] = free.get(free_sku, 0) + triggers * free_qty
+    return free
 
 def _helper_chargeable_after_free(sku: str, counts: Counter, cross_free: Dict[str, int]) -> int:
     c = counts.get(sku, 0)
@@ -58,48 +58,33 @@ def _helper_chargeable_after_free(sku: str, counts: Counter, cross_free: Dict[st
 
 
 class CheckoutSolution:
-    PRICES = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10}
-    OFFERS = {"A": [(5, 200), (3, 130)], "B": [(2, 45)]}
-
-    def _apply_bundles(self, count: int, offers):
-        total = 0
-        for qty, price in offers:
-            n, count = divmod(count, qty)
-            total += price * n
-
-        return total, count
 
     def checkout(self, skus):
         if not isinstance(skus, str):
             return -1
-        if any(ch not in self.PRICES for ch in skus):
+        if any(ch not in PRICES for ch in skus):
             return -1
 
         counts = Counter(skus)
+
+        cross_free = _helper_cross_apply_offers(counts)
         basket_total = 0
 
-        free_b = counts.get('E', 0) // 2
-        charged_b = max(0, counts.get('B', 0) - free_b)
+        for sku, unit_price in PRICES.items():
+            chargeable_count = _helper_chargeable_after_free(sku, counts, cross_free)
+            if chargeable_count <= 0:
+                continue
 
-        a_count = counts.get('A', 0)
-        a_total, a_remaining = self._apply_bundles(a_count, self.OFFERS['A'])
-        basket_total += a_total + a_remaining * self.PRICES['A']
+            bundles = MULTI_BUY_OFFERS.get(sku, [])
 
-        b_total = 0
-        b_remaining = charged_b
-        b_total, b_remaining = self._apply_bundles(b_remaining, self.OFFERS['B'])
-        basket_total += b_total + b_remaining * self.PRICES['B']
+            if bundles:
+                b_total, leftover  = _helper_apply_bundles(chargeable_count, bundles)
+                basket_total += b_total + leftover * unit_price
 
-        basket_total += counts.get('C', 0) * self.PRICES['C']
-        basket_total += counts.get('D', 0) * self.PRICES['D']
-        basket_total += counts.get('E', 0) * self.PRICES['E']
-
-        f_count = counts.get('F', 0)
-        free_f = f_count // 3
-        charged_f = f_count - free_f
-        basket_total += charged_f * self.PRICES['F']
-
+            else:
+                basket_total += chargeable_count * unit_price
         return basket_total
+
 
 
 

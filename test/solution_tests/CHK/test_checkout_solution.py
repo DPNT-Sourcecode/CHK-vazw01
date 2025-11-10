@@ -1,7 +1,7 @@
 from lib.solutions.CHK import checkout_solution
 
-def test_checkout_solution():
 
+def test_checkout_solution():
     checkout = checkout_solution.CheckoutSolution().checkout
 
     assert checkout("A") == 50
@@ -14,4 +14,10 @@ def test_checkout_solution():
     assert checkout("EEBBB") == 125
     assert checkout("eed") == -1
     assert checkout(123) == -1
+    assert checkout("FFF") == 20
+    assert checkout("FFFF") == 30
+    assert checkout("FFFFFF") == 40
+
+
+
 

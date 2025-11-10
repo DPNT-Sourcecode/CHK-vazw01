@@ -9,16 +9,16 @@ class TestCheckoutSolution(unittest.TestCase):
     def check_cases(self, cases):
         for skus, expected in cases:
             with self.subTest(skus=skus):
-                got = self.sol.checkout(skus)
+                got = self.checkout.checkout(skus)
                 self.assertEqual(got, expected)
 
     def test_validation(self):
         cases = [
             ("", 0),
-            ("abc", -1),   # lowercase illegal
-            ("A1", -1),    # digit illegal
-            (None, -1),    # non-string
-            (123, -1),     # non-string
+            ("abc", -1),
+            ("A1", -1),
+            (None, -1),
+            (123, -1),
         ]
         self.check_cases(cases)
 
@@ -45,12 +45,7 @@ class TestCheckoutSolution(unittest.TestCase):
 
     def test_H_bundles(self):
         cases = [
-            ("H", 10),
-            ("HHHHH", 45),
-            ("H"*10, 80),
-            ("H"*15, 125),
-            ("H"*16, 135),
-            ("H"*25, 205),
+            ("H", 10), ("HHHHH", 45), ("H" * 10, 80), ("H" * 15, 125), ("H" * 16, 135), ("H" * 25, 205),
         ]
         self.check_cases(cases)
 
@@ -69,8 +64,8 @@ class TestCheckoutSolution(unittest.TestCase):
     def test_V_bundles(self):
         cases = [
             ("V", 50), ("VV", 90), ("VVV", 130), ("VVVV", 180),
-            ("VVVVV", 220), ("VVVVVV", 260), ("V"*7, 310),
-            ("V"*8, 350), ("V"*9, 390), ("V"*10, 440),
+            ("VVVVV", 220), ("VVVVVV", 260), ("V" * 7, 310),
+            ("V" * 8, 350), ("V" * 9, 390), ("V" * 10, 440),
         ]
         self.check_cases(cases)
 
@@ -88,14 +83,19 @@ class TestCheckoutSolution(unittest.TestCase):
         ]
         self.check_cases(cases)
 
-    def test_cross_free_EB(self):
+    def test_cross_free_E_to_B(self):
         cases = [
-            ("E", 40), ("B", 30), ("EB", 40), ("EEB", 80),
-            ("EBB", 70), ("EEBB", 80), ("EEEEBB", 120),
+            ("EE", 80),
+            ("EEB", 80),
+            ("EEBB", 110),
+            ("EEBBB", 125),
+            ("EEBBBB", 155),
+            ("BEE", 80),
+            ("EBE", 80),
         ]
         self.check_cases(cases)
 
-    def test_cross_free_NM(self):
+    def test_cross_free_N_to_M(self):
         cases = [
             ("NNN", 120),
             ("NNNM", 120),
@@ -103,6 +103,30 @@ class TestCheckoutSolution(unittest.TestCase):
         ]
         self.check_cases(cases)
 
+    def test_cross_free_R_to_Q(self):
+        cases = [
+            ("RRR", 150),
+            ("RRRQ", 150),
+            ("RRRQQQ", 210),
+            ("RRRQQQQQQ", 290),
+        ]
+        self.check_cases(cases)
 
+    def test_mixed(self):
+        cases = [
+            ("GJTZ", 150),
+            ("ABCD", 115),
+            ("ABCDXYZ", 265),
+        ]
+        self.check_cases(cases)
+
+    def test_large_counts_stress(self):
+        cases = [
+            ("A" * 23, 930),
+            ("H" * 37, 305),
+            ("V" * 14, 610),
+        ]
+        self.check_cases(cases)
+        
 if __name__ == "__main__":
     unittest.main()

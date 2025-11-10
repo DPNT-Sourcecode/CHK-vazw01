@@ -19,5 +19,3 @@ def test_checkout_solution():
     assert checkout("FFFFFF") == 40
 
 
-
-

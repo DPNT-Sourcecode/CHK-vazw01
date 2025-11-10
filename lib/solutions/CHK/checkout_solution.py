@@ -25,19 +25,18 @@ class CheckoutSolution:
         free_b  = counts.get('E', 0) // 2
         charged_b = max(0, counts.get('B', 0) - free_b)
 
-        for item, count in counts.items():
-            if item not in self.PRICES:
-                return -1
+        a_count = counts.get('A', 0)
+        a_total, a_remaining = self._apply_bundles(a_count, self.OFFERS['A'])
+        basket_total += a_total + a_remaining * self.PRICES['A']
 
-            offer_total = 0
-            if item in self.OFFERS:
-                qty, offer_price = self.OFFERS[item]
-                offer_count = count // qty
-                offer_total += offer_count * offer_price
-                count -= offer_count * qty
+        b_total = 0
+        b_remaining = charged_b
+        b_total, b_remaining = self._apply_bundles(b_remaining, self.OFFERS['B'])
+        basket_total += b_total + b_remaining * self.PRICES['B']
 
-            offer_total += self.PRICES[item] * count
-            basket_total += offer_total
+        basket_total += counts.get('C', 0) * self.PRICES['C']
+        basket_total += counts.get('D', 0) * self.PRICES['D']
+        basket_total += counts.get('E', 0) * self.PRICES['E']
 
         return basket_total
 

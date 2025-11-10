@@ -1,6 +1,8 @@
 from collections import Counter
 
 
+
+
 class CheckoutSolution:
     PRICES = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10}
     OFFERS = {"A": [(5,200),(3, 130)], "B": [(2, 45)]}
@@ -44,4 +46,5 @@ class CheckoutSolution:
         basket_total += charged_f * self.PRICES['F']
 
         return basket_total
+
 

@@ -84,8 +84,3 @@ class CheckoutSolution:
             else:
                 basket_total += chargeable_count * unit_price
         return basket_total
-
-
-
-
-

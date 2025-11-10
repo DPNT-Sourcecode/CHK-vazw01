@@ -31,6 +31,32 @@ CROSS_OFFERS: List[Tuple[str, int, str, int]] = [
 ]
 
 
+def _helper_apply_bundles(count: int, offers: List[Tuple[int, int]]) -> Tuple[int, int]:
+    total = 0
+    for qty, price in offers:
+        n, count = divmod(count, qty)
+        total += price * n
+
+    return total, count
+
+def _helper_cross_apply_offers(counts: Counter) -> Dict[str, int]:
+    adjusted_counts = counts.copy()
+    for offer_sku, required_qty, free_sku, free_qty in CROSS_OFFERS:
+        num_offers = counts.get(offer_sku, 0) // required_qty
+        if num_offers > 0 and free_sku in adjusted_counts:
+            adjusted_counts[free_sku] = max(0, adjusted_counts[free_sku] - num_offers * free_qty)
+    return adjusted_counts
+
+def _helper_chargeable_after_free(sku: str, counts: Counter, cross_free: Dict[str, int]) -> int:
+    c = counts.get(sku, 0)
+    group = SELF_OFFERS.get(sku)
+    if group:
+        c -= c // group
+    if sku in cross_free:
+        c = max(0, c - cross_free[sku])
+    return c
+
+
 class CheckoutSolution:
     PRICES = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10}
     OFFERS = {"A": [(5, 200), (3, 130)], "B": [(2, 45)]}
@@ -74,6 +100,7 @@ class CheckoutSolution:
         basket_total += charged_f * self.PRICES['F']
 
         return basket_total
+
 
 
 

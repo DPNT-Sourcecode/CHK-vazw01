@@ -3,7 +3,7 @@ from collections import Counter
 
 class CheckoutSolution:
     PRICES = {"A": 50, "B": 30, "C": 20, "D": 15, "E": 40}
-    OFFERS = {"A": (3, 130), "B": (2, 45)}
+    OFFERS = {"A": [(5,200),(3, 130)], "B": [(2, 45)]}
 
     def _apply_bundles(self, count: int, offers):
         total = 0
@@ -39,5 +39,6 @@ class CheckoutSolution:
         basket_total += counts.get('E', 0) * self.PRICES['E']
 
         return basket_total
+
 
 

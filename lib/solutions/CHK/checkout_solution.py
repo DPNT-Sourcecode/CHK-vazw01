@@ -59,7 +59,7 @@ def _helper_chargeable_after_free(sku: str, counts: Counter, cross_free: Dict[st
         c = max(0, c - cross_free[sku])
     return c
 
-def _helper_apply_group_offer(chargeable_counts: Counter) -> int:
+def _helper_apply_group_offer(chargeable_counts: Dict[str, int]) -> int:
     price_list: List[int] = []
     for sku in GROUP_ITEMS:
         count = chargeable_counts.get(sku, 0)
@@ -75,7 +75,6 @@ def _helper_apply_group_offer(chargeable_counts: Counter) -> int:
     return group_total + leftover_total
 
 class CheckoutSolution:
-
     def checkout(self, skus):
         if not isinstance(skus, str):
             return -1
@@ -83,23 +82,30 @@ class CheckoutSolution:
             return -1
 
         counts = Counter(skus)
-
         cross_free = _helper_cross_apply_offers(counts)
         basket_total = 0
 
+        chargeable_per_sku: Dict[str, int] = {}
+        for sku in PRICES.keys():
+            chargeable_per_sku[sku] = _helper_chargeable_after_free(sku, counts, cross_free)
+
+        group_total = _helper_apply_group_offer(chargeable_per_sku)
+        basket_total += group_total
+
         for sku, unit_price in PRICES.items():
-            chargeable_count = _helper_chargeable_after_free(sku, counts, cross_free)
+            if sku in GROUP_ITEMS:
+                continue
+            chargeable_count = chargeable_per_sku.get(sku, 0)
             if chargeable_count <= 0:
                 continue
-
             bundles = MULTI_BUY_OFFERS.get(sku, [])
-
             if bundles:
-                b_total, leftover  = _helper_apply_bundles(chargeable_count, bundles)
+                b_total, leftover = _helper_apply_bundles(chargeable_count, bundles)
                 basket_total += b_total + leftover * unit_price
-
             else:
                 basket_total += chargeable_count * unit_price
+
         return basket_total
+
 
 

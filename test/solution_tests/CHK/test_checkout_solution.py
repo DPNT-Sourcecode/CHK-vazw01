@@ -127,6 +127,6 @@ class TestCheckoutSolution(unittest.TestCase):
             ("V" * 14, 610),
         ]
         self.check_cases(cases)
-        
+
 if __name__ == "__main__":
     unittest.main()

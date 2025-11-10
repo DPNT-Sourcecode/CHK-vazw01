@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Dict
+from typing import Dict, List, Tuple
 
 PRICES: Dict[str, int] = {
     "A": 50, "B": 30, "C": 20, "D": 15, "E": 40, "F": 10,
@@ -19,9 +19,16 @@ MULTI_BUY_OFFERS: Dict[str, list] = {
     "V": [(3, 130), (2, 90)],
 }
 
-SELF_OFFERS: Dict[str, list] = {
-    
+SELF_OFFERS: Dict[str, int] = {
+    "F": 3,
+    "U": 4,
 }
+
+CROSS_OFFERS: List[Tuple[str, int, str, int]] = [
+    ("E", 2, "B", 1),
+    ("N", 3, "M", 1),
+    ("R", 3, "Q", 1),
+]
 
 
 class CheckoutSolution:
@@ -67,5 +74,6 @@ class CheckoutSolution:
         basket_total += charged_f * self.PRICES['F']
 
         return basket_total
+
 
 
